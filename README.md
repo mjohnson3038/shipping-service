@@ -18,7 +18,8 @@ Build a stand-alone shipping service API that calculates estimated shipping cost
 - Create user stories and keep the stories up-to-date throughout the project
 - Have two Heroku deployments, Petsy and Shipping API
 - Shipping API will communicate with Petsy via JSON
-- Integrate the [ActiveShipping](https://github.com/Shopify/active_shipping) gem to do shipping-specific logic for you
+- Integrate the [ActiveShipping](https://github.com/Shopify/active_shipping) gem to communicate with the APIs of multiple actual package carriers to receive real shipping rates data.
+- Mock the results of ActiveShipping's API calls for testing purposes, using VCR.
 
 ## Project Baseline
 Setup both rails applications before building and implementing your shipping API. One rails app will be the provided bEtsy project, [Petsy](https://github.com/Ada-C6/betsy-shipping). The other will be from scratch, for your Shipping API.
@@ -28,6 +29,7 @@ Setup both rails applications before building and implementing your shipping API
     - A Ruby gemset that locks the Ruby version to 2.3.1
     - Use [simplecov](https://github.com/colszowka/simplecov) for code coverage reporting
 - Create a NEW fork from [Petsy](https://github.com/Ada-C6/betsy-shipping)
+    - Read and follow the development instructions in the project's README
     - Host your forked Petsy app on Heroku
     - Review Petsy code to come up with a basic understanding of the current checkout user flow
 
