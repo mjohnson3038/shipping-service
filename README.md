@@ -1,5 +1,5 @@
 # Shipping Service API
-Build a stand-alone shipping service API that calculates estimated shipping costs. Then, implement your shipping service API into the provided bEtsy application, Petsy.
+Build a stand-alone shipping service API that calculates estimated shipping costs. Then, implement your shipping service API into the provided bEtsy application, [Petsy](https://github.com/Ada-C6/betsy-shipping).
 
 ## Learning Goals
 - Develop the ability to read 3rd party code
@@ -21,7 +21,7 @@ Build a stand-alone shipping service API that calculates estimated shipping cost
 - Integrate the [ActiveShipping](https://github.com/Shopify/active_shipping) gem to do shipping-specific logic for you
 
 ## Project Baseline
-Setup both rails applications before building and implementing your shipping API. One rails app will be the provided Betsy project, Petsy. The other will be from scratch, for your Shipping API. 
+Setup both rails applications before building and implementing your shipping API. One rails app will be the provided bEtsy project, [Petsy](https://github.com/Ada-C6/betsy-shipping). The other will be from scratch, for your Shipping API.
 
 ### Baseline Requirements
 - A new Rails 4.2.7 application for your API
