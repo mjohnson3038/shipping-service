@@ -18,7 +18,7 @@ Build a stand-alone shipping service API that calculates estimated shipping cost
 - Create user stories and keep the stories up-to-date throughout the project
 - Have two Heroku deployments, Petsy and Shipping API
 - Shipping API will communicate with Petsy via JSON
-- Integrate the [ActiveShipping](https://github.com/Shopify/active_shipping) gem to communicate with the APIs of multiple actual package carriers to receive real shipping rates data.
+- Integrate the [ActiveShipping](https://github.com/Shopify/active_shipping) gem to communicate with the APIs of multiple actual package carriers and receive real shipping rates data.
 - Mock the results of ActiveShipping's API calls for testing purposes, using VCR.
 
 ## Project Baseline
@@ -47,14 +47,18 @@ Your API should generate a quote with options of shipping services and their cos
   - When a User's request does not process in a timely manner, return an appropriate error
 
 #### Your Petsy application will:
-- Integrate shipping estimates into the checkout workflow using your shipping API
+- Have an API wrapper for your shipping API, in the lib directory
+- Integrate shipping estimates into the checkout workflow using your shipping API wrapper
 - Present the relevant shipping information to the user during the checkout process
+  - Type of service
   - Cost
-  - Delivery estimate
+  - Delivery estimate (when available)
   - Tracking information (when available)
+- Allow the user to select a particular shipping option for their order, the cost of which will be included in the order's total
 
 ### Testing
 - 95% test coverage for all API Controller actions, Model validations, and Model methods
+- 95% test coverage for all API wrapper code added to your Petsy project fork
 
 ### Added Fun!
 - Allow merchants to view the total shipping costs for all of their products in a particular order
