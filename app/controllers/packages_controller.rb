@@ -18,7 +18,7 @@ class PackagesController < ApplicationController
   #   render json: packages
   # end
 
-  def self.find_rate(weight, state, city, zip)
+  def find_rate
     packages = [
       ActiveShipping::Package.new(weight, [SIZE_LENGTH, SIZE_HEIGHT, SIZE_WIDTH], units: :imperial)
     ]
@@ -28,7 +28,7 @@ class PackagesController < ApplicationController
     destination = ActiveShipping::Location.new(country: D_COUNTRY, state: state, city: city, postal_code: zip)
 
     # Find out how much it'll be.
-    ups = ActiveShipping::UPS.new(login: ENV[ACTIVESHIPPING_UPS_LOGIN], password: ENV[ACTIVESHIPPING_UPS_PASSWORD], key: ENV[ACTIVESHIPPING_UPS_KEY])
+    # ups = ActiveShipping::UPS.new(login: ENV[ACTIVESHIPPING_UPS_LOGIN], password: ENV[ACTIVESHIPPING_UPS_PASSWORD], key: ENV[ACTIVESHIPPING_UPS_KEY])
     usps = ActiveShipping::USPS.new(login: ENV[ACTIVESHIPPING_USPS_LOGIN])
 
     response = ups.find_rates(origin, destination, packages)

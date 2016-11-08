@@ -19,7 +19,14 @@ class PackagesControllerTest < ActionController::TestCase
   SIZE_WIDTH = 12
   SIZE_HEIGHT = 15
   SIZE_LENGTH = 4.5
-  UNITS = :imperial
+
+  test "find_rate should return an array of rate options" do
+    get :find_rate
+    p = packages(:one)
+    puts "gdasgjdkljagslkjdgaslkjdgalsjkdglj #{p}"
+    rates = p.find_rate
+    assert_kind_of Array, rates
+  end
 
   # test "can get #index" do
   #   get :index
@@ -43,9 +50,4 @@ class PackagesControllerTest < ActionController::TestCase
   #   body = JSON.parse(response.body)
   #   assert_equal 3, body.length
   # end
-
-  test "find_rate should return an array of rate options" do
-    rates = Package.find_rate(packages(:one))
-    assert_kind_of Array, rates
-  end
 end

@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
 
   get 'packages', to: 'packages#index', as: 'packages'
+
+  get 'packages/find_rate',to: 'packages#find_rate', as: 'rate'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
