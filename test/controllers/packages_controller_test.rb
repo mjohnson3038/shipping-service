@@ -16,11 +16,11 @@ class PackagesControllerTest < ActionController::TestCase
       "weight" => 10,
       "destination" => {"state" => "WA", "city" => "Seattle", "postal_code" => "98102"}
       }
-      post :create, {"package": package_data}
+      post :find_rate, {"package": package_data}
 
       assert_match 'application/json', response.header['Content-Type']
       body = JSON.parse(response.body)
 
-      assert_instance_of Array, body
+      assert_instance_of Hash, body
     end
   end
