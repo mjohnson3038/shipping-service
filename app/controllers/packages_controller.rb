@@ -33,7 +33,7 @@ class PackagesController < ApplicationController
 
     response = {"shipping_rates" => rates}
 
-    render json: response
+    render json: response, status: :created
   end
 
   def get_rates(origin, destination, packages)
@@ -65,5 +65,4 @@ class PackagesController < ApplicationController
     end
     return rates
   end
-
 end
