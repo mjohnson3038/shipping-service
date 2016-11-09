@@ -29,45 +29,41 @@ class PackagesController < ApplicationController
     # city: params[:city], postal_code: params[:postal_code].to_i)
     destination = ActiveShipping::Location.new(country: D_COUNTRY, state: 'WA', city: 'Seattle', postal_code: '98118')
 
-    usps_rates = get_usps_rates(ORIGIN, destination, packages)
-    ups_rates = get_usp_rates(ORIGIN, destination, packages)
+    rates = get_rates(ORIGIN, destination, packages)
 
-    response = {"ups" => ups_rates, "usps" => usps_rates}
+    response = {"shipping_rates" => rates}
 
     render json: response
   end
 
-  def get_usps_rates(origin, destination, packages)
+  def get_rates(origin, destination, packages)
     usps = ActiveShipping::USPS.new(login: USPS_LOGIN)
-    response = usps.find_rates(ORIGIN, destination, packages)
+    response_one = usps.find_rates(ORIGIN, destination, packages)
+
+    ups = ActiveShipping::UPS.new(login: UPS_LOGIN,
+    password: PASSWORD, key: KEY)
+    response_two = ups.find_rates(ORIGIN, destination, packages)
+
+    track_response = []
+
+    response_one.rates.each do |rate|
+      track_response << rate
+    end
+    response_two.rates.each do |rate|
+      track_response << rate
+    end
+
     rates =[]
-    response.rates.each do |rate|
-      usps_rate = {}
-      usps_rate[:name] = rate.service_name
-      usps_rate[:cost] = ((rate.total_price.to_f)/100)
+    track_response.each do |rate|
+      shipping_rate = {}
+      shipping_rate[:name] = rate.service_name
+      shipping_rate[:cost] = ((rate.total_price.to_f)/100)
       if !(rate.delivery_range.empty?)
-        usps_rate[:delivery] = rate.delivery_range
+        shipping_rate[:delivery] = rate.delivery_range
       end
-      rates << usps_rate
+      rates << shipping_rate
     end
     return rates
   end
 
-
-  def get_usp_rates(origin, destination, packages)
-    ups = ActiveShipping::UPS.new(login: UPS_LOGIN,
-    password: PASSWORD, key: KEY)
-    response = ups.find_rates(ORIGIN, destination, packages)
-    @package_rates =[]
-    response.rates.each do |rate|
-      ups_rate = {}
-      ups_rate[:name] = rate.service_name
-      ups_rate[:cost] = ((rate.total_price.to_f)/100)
-      if !(rate.delivery_range.empty?)
-        ups_rate[:delivery] = rate.delivery_range
-      end
-      @package_rates << ups_rate
-    end
-    return @package_rates
-  end
 end
