@@ -12,32 +12,50 @@ class PackagesController < ApplicationController
   SIZE_WIDTH = 12
   SIZE_HEIGHT = 15
   SIZE_LENGTH = 4.5
+  ORIGIN = ActiveShipping::Location.new(country: O_COUNTRY, state: 'WA', city: 'Seattle', postal_code: '98102')
+  LOGIN = ENV['ACTIVESHIPPING_UPS_LOGIN']
+  PASSWORD = ENV['ACTIVESHIPPING_UPS_PASSWORD']
+  KEY = ENV['ACTIVESHIPPING_UPS_KEY']
+
+
+  def find_rate
+    packages = [
+      # ActiveShipping::Package.new(params[:weight].to_i, [SIZE_LENGTH, SIZE_HEIGHT, SIZE_WIDTH], units: :imperial)
+      ActiveShipping::Package.new(60, [SIZE_LENGTH, SIZE_HEIGHT, SIZE_WIDTH], units: :imperial)
+    ]
+    # destination = ActiveShipping::Location.new(country: D_COUNTRY, state: params[:state],
+    # city: params[:city], postal_code: params[:postal_code].to_i)
+    destination = ActiveShipping::Location.new(country: D_COUNTRY, state: 'WA', city: 'Seattle', postal_code: '98118')
+
+    # usps_rates = get_usps_rates(origin, destination, packages)
+    ups_rates = get_usp_rates(ORIGIN, destination, packages)
+
+    # response = {"usps" => usps_rates, "ups" => ups_rates}
+    response = {"ups" => ups_rates}
+
+    render json: response
+  end
+
+  # def get_usps_rates(origin, destination, packages)
+  #   usps = ActiveShipping::USPS.new(login: ENV["ACTIVESHIPPING_USPS_LOGIN"])
+  #   response = usps.find_rates(origin, destination, packages)
   #
-  # def index
-  #   packages = Package.all
-  #   render json: packages
+  #   usps_rates = {}
+  #   usps_rates = response.rates.sort_by(&:price).each do |rate|
+  #     usps_rates[rate.service_name] =  rate.price
+  #   end
+  #   return usps_rates
   # end
 
-  def self.find_rate(weight, state, city, zip)
-    packages = [
-      ActiveShipping::Package.new(weight, [SIZE_LENGTH, SIZE_HEIGHT, SIZE_WIDTH], units: :imperial)
-    ]
+  def get_usp_rates(origin, destination, packages)
+    ups = ActiveShipping::UPS.new(login: LOGIN,
+    password: PASSWORD, key: KEY)
+    response = ups.find_rates(ORIGIN, destination, packages)
 
-    origin = ActiveShipping::Location.new(country: O_COUNTRY, state: 'WA', city: 'Seattle', postal_code: '98102')
-
-    destination = ActiveShipping::Location.new(country: D_COUNTRY, state: state, city: city, postal_code: zip)
-
-    # Find out how much it'll be.
-    ups = ActiveShipping::UPS.new(login: ENV[ACTIVESHIPPING_UPS_LOGIN], password: ENV[ACTIVESHIPPING_UPS_PASSWORD], key: ENV[ACTIVESHIPPING_UPS_KEY])
-    usps = ActiveShipping::USPS.new(login: ENV[ACTIVESHIPPING_USPS_LOGIN])
-
-    response = ups.find_rates(origin, destination, packages)
-    ups_rates = response.rates.sort_by(&:price).collect {|rate| [rate.service_name, rate.price]}
-
-    response = usps.find_rates(origin, destination, packages)
-    usps_rates = response.rates.sort_by(&:price).collect {|rate| [rate.service_name, rate.price]}
-
-    final_array = ups_rates + usps_rates
-    return final_array
+    ups_rates = {}
+    ups_rates = response.rates.sort_by(&:price).each do |rate|
+      ups_rates[rate.service_name] = rate.price
+    end
+    return ups_rates
   end
 end

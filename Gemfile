@@ -28,6 +28,9 @@ gem 'active_shipping'
 # For creating APIs
 gem 'rails-api'
 
+# FOR ENV
+gem 'dotenv-rails'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
