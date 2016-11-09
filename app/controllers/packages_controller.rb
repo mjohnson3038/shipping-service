@@ -51,11 +51,16 @@ class PackagesController < ApplicationController
     ups = ActiveShipping::UPS.new(login: LOGIN,
     password: PASSWORD, key: KEY)
     response = ups.find_rates(ORIGIN, destination, packages)
-
-    ups_rates = {}
-    ups_rates = response.rates.sort_by(&:price).each do |rate|
-      ups_rates[rate.service_name] = rate.price
+    ups =[]
+    response.rates.each do |rate|
+      ups_rate = {}
+      ups_rate[:name] = rate.service_name
+      ups_rate[:cost] = ((rate.total_price.to_f)/100)
+      if !(rate.delivery_range.empty?)
+        ups_rate[:delivery] = rate.delivery_range
+      end
+      ups << ups_rate
     end
-    return ups_rates
+    return ups
   end
 end
