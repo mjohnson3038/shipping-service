@@ -59,4 +59,28 @@ class PackagesControllerTest < ActionController::TestCase
       }
     end
   end
+
+  test "State must be written in the two character form" do
+    assert_raises ActiveShipping::ResponseError do
+
+      get :find_rate,  {
+        "weight" => 9,
+        "state" => "Washington",
+        "city" => "Seattle",
+        "zip" => "98118"
+      }
+    end
+  end
+
+  test "ActiveShipping::ResponseError when an invalid state is provided" do
+    assert_raises ActiveShipping::ResponseError do
+
+      get :find_rate,  {
+        "weight" => 9,
+        "state" => "YZ",
+        "city" => "Seattle",
+        "zip" => "98118"
+      }
+    end
+  end
 end

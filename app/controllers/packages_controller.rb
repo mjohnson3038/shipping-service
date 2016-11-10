@@ -24,17 +24,18 @@ class PackagesController < ApplicationController
 
     packages =
     [
-      # begin
+      begin
         ActiveShipping::Package.new(params[:weight].to_i, [SIZE_LENGTH, SIZE_HEIGHT, SIZE_WIDTH], units: :imperial)
-      # rescue ActiveShipping::ResponseError =>
-      #   render
-      # end
+      rescue ActiveShipping::ResponseError => error
+        render json: { "error": error.response.message }
+      end
     ]
 
-    # if params[:zip] != 5
-    #   raise ArgumentError
-    # end
-    destination = ActiveShipping::Location.new(country: D_COUNTRY, state: params[:state], city: params[:city], postal_code: params[:zip])
+    begin
+      destination = ActiveShipping::Location.new(country: D_COUNTRY, state: params[:state], city: params[:city], postal_code: params[:zip])
+    rescue ActiveShipping::ResponseError => error
+      render json: { "error": error.response.message }
+    end
 
     rates = get_rates(ORIGIN, destination, packages)
 
