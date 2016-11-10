@@ -18,10 +18,9 @@ class PackagesController < ApplicationController
   KEY = ENV['ACTIVESHIPPING_UPS_KEY']
   USPS_LOGIN = ENV['ACTIVESHIPPING_USPS_LOGIN']
 
-
-
   def find_rate
 
+  logger.info(">>>>>>>> #{params}")
     packages = [
 
       ActiveShipping::Package.new(params[:weight].to_i, [SIZE_LENGTH, SIZE_HEIGHT, SIZE_WIDTH], units: :imperial)
@@ -32,6 +31,9 @@ class PackagesController < ApplicationController
     rates = get_rates(ORIGIN, destination, packages)
 
     response = {"shipping_rates" => rates}
+    response.map do |rate|
+      logger.info("<<<<<<<<<<< #{rate}")
+    end
 
     render json: response, status: :created
   end
