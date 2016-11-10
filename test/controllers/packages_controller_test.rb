@@ -24,14 +24,39 @@ class PackagesControllerTest < ActionController::TestCase
     assert_response :created
   end
 
-  # test "when a zipcode that doesn't exist is given return no content" do
-  #    get :find_rate,  {
-  #        "weight" => 10,
-  #        "state" => "WA",
-  #        "city" => "Seattle",
-  #        "zip" => "98102"
-  #      }
-  #      assert_response :not_found
-  #     #  assert_emptys
-  # end
+  test "an ActiveShipping::ResponseError with invalid zipcode" do
+    assert_raises ActiveShipping::ResponseError do
+
+      get :find_rate,  {
+        "weight" => 10,
+        "state" => "WA",
+        "city" => "Seattle",
+        "zip" => "99999"
+      }
+    end
+  end
+
+  test "an ActiveShipping::ResponseError with a weight over 90 pounds" do
+    assert_raises ActiveShipping::ResponseError do
+
+      get :find_rate,  {
+        "weight" => 100000,
+        "state" => "WA",
+        "city" => "Seattle",
+        "zip" => "98118"
+      }
+    end
+  end
+
+  test "an ActiveShipping::ResponseError when the zipcode does not match the state" do
+    assert_raises ActiveShipping::ResponseError do
+
+      get :find_rate,  {
+        "weight" => 9,
+        "state" => "WA",
+        "city" => "Seattle",
+        "zip" => "02131"
+      }
+    end
+  end
 end

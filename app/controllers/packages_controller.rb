@@ -26,9 +26,8 @@ class PackagesController < ApplicationController
     [
       # begin
         ActiveShipping::Package.new(params[:weight].to_i, [SIZE_LENGTH, SIZE_HEIGHT, SIZE_WIDTH], units: :imperial)
-      # rescue
-      #   ArgumentError
-
+      # rescue ActiveShipping::ResponseError =>
+      #   render
       # end
     ]
 
