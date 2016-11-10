@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  # root 'packages#find_rate'
+  root 'packages#find_rate'
 
   get 'packages/find_rate', to: 'packages#find_rate', as: 'packages'
   # The priority is based upon order of creation: first created -> highest priority.
