@@ -21,5 +21,17 @@ class PackagesControllerTest < ActionController::TestCase
     body = JSON.parse(response.body)
 
     assert_instance_of Hash, body
+    assert_response :created
   end
+
+  # test "when a zipcode that doesn't exist is given return no content" do
+  #    get :find_rate,  {
+  #        "weight" => 10,
+  #        "state" => "WA",
+  #        "city" => "Seattle",
+  #        "zip" => "98102"
+  #      }
+  #      assert_response :not_found
+  #     #  assert_emptys
+  # end
 end

@@ -20,22 +20,34 @@ class PackagesController < ApplicationController
 
   def find_rate
 
-  logger.info(">>>>>>>> #{params}")
-    packages = [
+    logger.info(">>>>>>>> #{params}")
 
-      ActiveShipping::Package.new(params[:weight].to_i, [SIZE_LENGTH, SIZE_HEIGHT, SIZE_WIDTH], units: :imperial)
+    packages =
+    [
+      # begin
+        ActiveShipping::Package.new(params[:weight].to_i, [SIZE_LENGTH, SIZE_HEIGHT, SIZE_WIDTH], units: :imperial)
+      # rescue
+      #   ArgumentError
+
+      # end
     ]
 
+    # if params[:zip] != 5
+    #   raise ArgumentError
+    # end
     destination = ActiveShipping::Location.new(country: D_COUNTRY, state: params[:state], city: params[:city], postal_code: params[:zip])
 
     rates = get_rates(ORIGIN, destination, packages)
 
     response = {"shipping_rates" => rates}
-    response.map do |rate|
-      logger.info("<<<<<<<<<<< #{rate}")
-    end
 
-    render json: response, status: :created
+    logger.info("<<<<<<<<<<< #{response}")
+
+    if response
+      render json: response, status: :created
+    else
+      render status: :not_found, nothing: true
+    end
   end
 
   def get_rates(origin, destination, packages)
@@ -67,4 +79,9 @@ class PackagesController < ApplicationController
     end
     return rates
   end
+end
+
+private
+def package_params
+  params.require(:package).permit(:weight, :state, :city, :zip)
 end
