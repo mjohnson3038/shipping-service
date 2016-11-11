@@ -24,18 +24,10 @@ class PackagesController < ApplicationController
 
     packages =
     [
-      begin
-        ActiveShipping::Package.new(params[:weight].to_i, [SIZE_LENGTH, SIZE_HEIGHT, SIZE_WIDTH], units: :imperial)
-      rescue ActiveShipping::ResponseError => error
-        render json: { "error": error.response.message }
-      end
+      ActiveShipping::Package.new(params[:weight].to_i, [SIZE_LENGTH, SIZE_HEIGHT, SIZE_WIDTH], units: :imperial)
     ]
 
-    begin
-      destination = ActiveShipping::Location.new(country: D_COUNTRY, state: params[:state], city: params[:city], postal_code: params[:zip])
-    rescue ActiveShipping::ResponseError => error
-      render json: { "error": error.response.message }
-    end
+    destination = ActiveShipping::Location.new(country: D_COUNTRY, state: params[:state], city: params[:city], postal_code: params[:zip])
 
     rates = get_rates(ORIGIN, destination, packages)
 
@@ -43,11 +35,14 @@ class PackagesController < ApplicationController
 
     logger.info("<<<<<<<<<<< #{response}")
 
-    if response
+    # if response
       render json: response, status: :created
-    else
-      render status: :not_found, nothing: true
-    end
+    # else
+    #   render status: :not_found, nothing: true
+    # end
+
+  rescue ActiveShipping::ResponseError => error
+    render json: { "error": error.response.message }
   end
 
   def get_rates(origin, destination, packages)
@@ -79,9 +74,4 @@ class PackagesController < ApplicationController
     end
     return rates
   end
-end
-
-private
-def package_params
-  params.require(:package).permit(:weight, :state, :city, :zip)
 end
